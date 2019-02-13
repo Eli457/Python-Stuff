@@ -12,19 +12,39 @@ class Spritesheet:
         #grab an image out of a larger spritesheet
         image = pg.Surface((width, height))
         image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        image = pg.transform.scale(image, (width * 2, height * 2))
         return image
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game):
         pg.sprite.Sprite.__init__(self)
         self.game = game
-        self.image = pg.Surface((30,40))
-        self.image.fill(YELLOW)
+        self.walking = False
+        self.jumping = False
+        self.current_frame = 0
+        self.last_update = 0
+        self.load_images()
+        self.image = self.standing_frames[0]
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH / 2, HEIGHT / 2)
         self.pos = vec(WIDTH / 2, HEIGHT / 2)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
+
+    def load_images(self):
+        self.standing_frames = [self.game.spritesheet.get_image(0, 0, 32, 32),
+                                self.game.spritesheet.get_image(32, 0, 32, 32)]
+        self.walk_frames_r = [self.game.spritesheet.get_image(0, 0, 32, 32),
+                              self.game.spritesheet.get_image(64, 0, 32, 32)]
+        self.walk_frames_l = []
+        
+        for frame in self.walk_frames_r:
+            self.walk_frames_l.append(pg.transform.flip(frame, True, False))
+
+        self.jump_frames = self.game.spritesheet.get_image(32, 0, 32, 32)
+        
+        
 
     def jump(self):
         #jump only in standing on platform
