@@ -5,8 +5,11 @@ from settings import *
 from sprites import *
 from os import path
 
+
 class Game:
+
     def __init__(self):
+
         #initailize game window, etc
         pg.init()
         pg.mixer.init()
